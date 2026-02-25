@@ -1,0 +1,207 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Cricket Premier - Frontend Implementation Plan",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Implement Internet Identity authentication with login/logout flow and principal display",
+      "acceptanceCriteria": [
+        "Unauthenticated users see a login page and cannot access game content",
+        "Clicking 'Login with Internet Identity' triggers Internet Identity authentication",
+        "After successful login, the user is redirected to the main dashboard",
+        "User principal ID is stored and displayed in the UI",
+        "Logout button clears the session and returns to the login screen"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Use the authorization component to enforce authentication before showing game features. Wrap the main app content with authentication guards so unauthenticated users see only the login screen. Add routing logic to redirect authenticated users to the dashboard. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/LoginScreen.tsx",
+          "operation": "create",
+          "description": "Create a login screen component displaying a 'Login with Internet Identity' button. Use the authorization component's useInternetIdentity hook to handle login flow. Apply cricket-themed styling (dark green background, gold accents). Include the generated stadium-banner.dim_1200x400.png image from frontend/public/assets/generated/stadium-banner.dim_1200x400.png as a hero banner. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/UserProfile.tsx",
+          "operation": "create",
+          "description": "Create a user profile display component showing the logged-in user's name and a logout button. Use the authorization component to access identity and handle logout with cache clearing. Display user's profile name (not principal ID). Apply consistent cricket-themed styling. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/ProfileSetupModal.tsx",
+          "operation": "create",
+          "description": "Create a modal for first-time users to set up their profile name. Use the authorization component's getCallerUserProfile and saveCallerUserProfile methods. Show modal only when authenticated user has no profile yet. Implement proper loading state handling to prevent modal flash. Apply cricket-themed styling. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Implement IPL tournament mode with team selection, match scheduling, points table, and knockout rounds",
+      "acceptanceCriteria": [
+        "All 10 IPL teams are available with names and colors",
+        "Tournament generates a full round-robin group stage schedule",
+        "Points table tracks wins, losses, and net run rate",
+        "Top 4 teams advance to knockout rounds",
+        "Final match determines the IPL champion",
+        "Tournament progress and results are persisted in the backend"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/IPLTournament.tsx",
+          "operation": "create",
+          "description": "Create IPL tournament page showing all 10 IPL franchise teams fetched via getTournamentTeams(TournamentType.ipl). Display team cards with names and jersey colors. Show tournament schedule, points table with wins/losses/net run rate, and knockout bracket. Include the generated ipl-trophy.dim_256x256.png image from frontend/public/assets/generated/ipl-trophy.dim_256x256.png as tournament branding. Fetch ongoing and completed matches via getTournamentMatches. Apply cricket-themed card layouts with dark green background and gold accents."
+        },
+        {
+          "path": "frontend/src/components/TournamentPointsTable.tsx",
+          "operation": "create",
+          "description": "Create a reusable points table component displaying team standings with columns for team name, matches played, wins, losses, and net run rate. Calculate standings from match results. Style as a card with cricket-themed colors (dark green, gold, white). Make responsive for mobile viewing."
+        },
+        {
+          "path": "frontend/src/components/KnockoutBracket.tsx",
+          "operation": "create",
+          "description": "Create a knockout bracket visualization component showing Qualifier 1, Eliminator, Qualifier 2, and Final rounds. Display match results and advancing teams. Use cricket-themed visual design with connected lines between rounds. Handle empty states when knockout rounds haven't started."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Implement BBL tournament mode with team selection, match scheduling, points table, and finals series",
+      "acceptanceCriteria": [
+        "All 8 BBL teams are available with names and colors",
+        "Tournament generates a round-robin group stage schedule",
+        "Points table tracks wins, losses, and net run rate",
+        "Top teams advance to finals series",
+        "Finals series determines the BBL champion",
+        "Tournament progress and results are persisted"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/BBLTournament.tsx",
+          "operation": "create",
+          "description": "Create BBL tournament page showing all 8 BBL franchise teams fetched via getTournamentTeams(TournamentType.bbl). Display team cards with names and colors. Show tournament schedule, points table, and finals series bracket. Include the generated bbl-logo.dim_256x256.png image from frontend/public/assets/generated/bbl-logo.dim_256x256.png as tournament branding. Fetch matches via getTournamentMatches. Reuse TournamentPointsTable component. Apply cricket-themed styling with BBL teal and gold color accents."
+        },
+        {
+          "path": "frontend/src/components/FinalsSeriesBracket.tsx",
+          "operation": "create",
+          "description": "Create a finals series bracket component for BBL showing progression through finals matches. Display match results and advancing teams. Use cricket-themed visual design. Handle empty states when finals haven't started."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Implement domestic cricket tournament mode with league selection and match scheduling",
+      "acceptanceCriteria": [
+        "At least 3 domestic competitions are available (Ranji Trophy, Sheffield Shield, County Championship)",
+        "Each domestic league has its own set of teams",
+        "Players can start a domestic tournament and simulate matches",
+        "Standings/points tables are shown per domestic competition",
+        "Results are saved to the backend"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/DomesticTournament.tsx",
+          "operation": "create",
+          "description": "Create domestic tournament page with a league selector (Ranji Trophy, Sheffield Shield, County Championship). For the selected league, fetch teams via getTournamentTeams with the appropriate TournamentType enum value (ranjiTrophy, sheffieldShield, countyChampionship). Display league-specific teams, match schedule, and standings table. Reuse TournamentPointsTable component. Apply cricket-themed styling with dark green and gold. Show format indicator (multi-day or limited-overs) per competition."
+        },
+        {
+          "path": "frontend/src/components/LeagueSelector.tsx",
+          "operation": "create",
+          "description": "Create a league selector component allowing users to choose between Ranji Trophy, Sheffield Shield, and County Championship. Display league names with icons. Apply cricket-themed button styling. Emit selected league to parent component."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Build main dashboard with navigation to International, IPL, BBL, and Domestic modes showing ongoing and completed games",
+      "acceptanceCriteria": [
+        "Dashboard displays four clearly labelled sections: International, IPL, BBL, Domestic",
+        "Each section is accessible via a navigation card or tab",
+        "Active/ongoing games and completed results are visible",
+        "Only authenticated users can see the dashboard"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Dashboard.tsx",
+          "operation": "create",
+          "description": "Create main dashboard page displaying four navigation cards: International Matches, IPL Tournament, BBL Tournament, and Domestic Leagues. Each card shows recent/ongoing matches for that mode fetched via getAllMatches and filtered by context. Use cricket-themed card designs with icons (cricket-ball-icon.dim_128x128.png and cricket-bat-icon.dim_128x128.png from frontend/public/assets/generated/). Apply dark green background with gold and white accents. Only render for authenticated users."
+        },
+        {
+          "path": "frontend/src/components/DashboardCard.tsx",
+          "operation": "create",
+          "description": "Create a reusable dashboard navigation card component with title, description, icon, and click handler. Style with cricket-themed colors, hover effects, and stadium-atmosphere visual elements. Make cards responsive for mobile."
+        },
+        {
+          "path": "frontend/src/components/RecentMatchesList.tsx",
+          "operation": "create",
+          "description": "Create a component displaying a list of recent/ongoing matches with team names, scores, and match status. Fetch data via getAllMatches. Show match format indicator. Apply cricket-themed list styling. Handle empty state when no matches exist."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add routing for Dashboard as the default authenticated landing page. Wire routes for IPLTournament, BBLTournament, DomesticTournament, and InternationalMatch pages. Ensure Dashboard is only accessible to authenticated users."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Implement match simulation screen with live scorecard, ball-by-ball commentary, and match progression controls",
+      "acceptanceCriteria": [
+        "Scorecard updates after each simulated ball/over",
+        "Current batting and bowling partnerships are displayed",
+        "Recent ball-by-ball commentary is shown (e.g., '4! Cover drive', 'OUT! Caught at mid-on')",
+        "Innings summary and match result screen shown at match end"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/MatchSimulation.tsx",
+          "operation": "create",
+          "description": "Create match simulation page displaying live-style scorecard with current batsmen, bowler, score, overs, wickets, and fall of wickets. Fetch match state via getMatch. Show 'Next Ball' and 'Auto-Simulate' buttons to progress the match. Display ball-by-ball commentary feed. When match ends, show match result summary with winner. Apply cricket-themed styling with dark green pitch background and gold accents."
+        },
+        {
+          "path": "frontend/src/components/Scorecard.tsx",
+          "operation": "create",
+          "description": "Create a scorecard component displaying current match state: team names, runs, wickets, overs, run rate, and batting/bowling partnerships. Style as a prominent card with cricket-themed colors. Update in real-time as match progresses."
+        },
+        {
+          "path": "frontend/src/components/CommentaryFeed.tsx",
+          "operation": "create",
+          "description": "Create a commentary feed component showing recent ball-by-ball events (e.g., '4! Cover drive', 'OUT! Caught'). Display as a scrollable list with cricket-themed styling. Handle empty state before match starts."
+        },
+        {
+          "path": "frontend/src/components/MatchResultSummary.tsx",
+          "operation": "create",
+          "description": "Create a match result summary component displaying final scores, winner, match format, and key statistics. Show winning margin. Style prominently with gold victory banner for winner. Apply cricket-themed celebration visuals."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add routing for MatchSimulation page with match ID parameter. Wire navigation from dashboard and tournament pages to simulation screen when user starts or views a match."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Apply bold cricket-themed visual design consistently across all screens",
+      "acceptanceCriteria": [
+        "All screens use the dark green + gold + white color palette",
+        "Cricket-themed iconography and layout patterns are consistent",
+        "Typography is bold and legible on dark backgrounds",
+        "Login screen, dashboard, team selection, and match screens all share the same visual theme"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Define global CSS custom properties for cricket theme: --pitch-green (dark green), --gold-accent, --white-text, --stadium-shadow. Apply base styles for dark green pitch-inspired background, bold cricket-themed typography, and consistent spacing. Set body background to pitch green. Define card shadow styles for stadium atmosphere. Ensure all text is legible on dark backgrounds."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Extend Tailwind theme with cricket-themed color palette: pitchGreen, goldAccent, stadiumGray, cricketWhite. Add custom font weights for bold headings. Configure dark mode defaults to match cricket theme. Define custom box-shadow utilities for stadium-atmosphere cards."
+        }
+      ]
+    }
+  ]
+}

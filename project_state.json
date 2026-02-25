@@ -1,0 +1,128 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "A cricket game app featuring all three formats (Test, ODI, T20), IPL, Domestic, and BBL leagues with international country teams and login/security system.",
+  "architectural_notes": [
+    "Game must support multiple league/tournament structures: IPL, BBL, Domestic, and international formats",
+    "Authentication system required for user login and security"
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Cricket stadium panoramic banner with floodlights and green pitch at night (stadium-banner.dim_1200x400.png)\n- Cricket ball close-up illustration with red leather and white seam on dark background (cricket-ball-icon.dim_128x128.png)\n- Cricket bat silhouette icon in gold on dark green background (cricket-bat-icon.dim_128x128.png)\n- IPL trophy cup golden illustration on dark background (ipl-trophy.dim_256x256.png)\n- BBL Big Bash lightning bolt logo-style graphic in teal and gold (bbl-logo.dim_256x256.png)",
+  "existing_features": [
+    {
+      "id": "feature-implement-internet-identity-based-user-authentication-so-users-must-log-in-before-accessing-any-game-features-display-a-login-screen-with-a-login-with-internet-identity-button-after-login-show-the-user-s-principal-id-and-a-logout-option",
+      "title": "Implement Internet Identity-based user authentication so users must log in before accessing any game features. Display a login screen with a 'Login with Internet Identity' button. After login, show the user's principal ID and a logout option.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-an-ipl-indian-premier-league-tournament-mode-with-all-10-ipl-franchise-teams-e-g-mumbai-indians-chennai-super-kings-royal-challengers-bangalore-kolkata-knight-riders-delhi-capitals-punjab-kings-rajasthan-royals-sunrisers-hyderabad-lucknow-super-giants-gujarat-titans-use-t20-format-include-a-group-stage-round-robin-and-knockout-rounds-qualifier-1-eliminator-qualifier-2-final",
+      "title": "Create an IPL (Indian Premier League) tournament mode with all 10 IPL franchise teams (e.g., Mumbai Indians, Chennai Super Kings, Royal Challengers Bangalore, Kolkata Knight Riders, Delhi Capitals, Punjab Kings, Rajasthan Royals, Sunrisers Hyderabad, Lucknow Super Giants, Gujarat Titans). Use T20 format. Include a group stage (round-robin) and knockout rounds (Qualifier 1, Eliminator, Qualifier 2, Final).",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-bbl-big-bash-league-tournament-mode-with-all-8-bbl-franchise-teams-sydney-sixers-sydney-thunder-melbourne-stars-melbourne-renegades-brisbane-heat-adelaide-strikers-hobart-hurricanes-perth-scorchers-use-t20-format-with-a-group-stage-and-finals-series",
+      "title": "Create a BBL (Big Bash League) tournament mode with all 8 BBL franchise teams (Sydney Sixers, Sydney Thunder, Melbourne Stars, Melbourne Renegades, Brisbane Heat, Adelaide Strikers, Hobart Hurricanes, Perth Scorchers). Use T20 format with a group stage and finals series.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-domestic-cricket-tournament-mode-representing-major-domestic-leagues-e-g-ranji-trophy-india-sheffield-shield-australia-county-championship-england-allow-selection-of-domestic-teams-per-league-support-both-multi-day-test-like-and-limited-overs-format-depending-on-the-selected-domestic-competition",
+      "title": "Create a Domestic cricket tournament mode representing major domestic leagues (e.g., Ranji Trophy - India, Sheffield Shield - Australia, County Championship - England). Allow selection of domestic teams per league. Support both multi-day (Test-like) and limited-overs format depending on the selected domestic competition.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-a-main-dashboard-that-lets-the-authenticated-user-choose-between-international-country-vs-country-matches-ipl-tournament-bbl-tournament-and-domestic-leagues-show-ongoing-and-completed-tournaments-matches-for-the-logged-in-user",
+      "title": "Build a main dashboard that lets the authenticated user choose between: International (country vs country) matches, IPL tournament, BBL tournament, and Domestic leagues. Show ongoing and completed tournaments/matches for the logged-in user.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-match-simulation-screen-that-displays-a-live-style-scorecard-during-a-simulated-match-current-batsmen-bowler-score-overs-fall-of-wickets-and-recent-ball-by-ball-commentary-show-a-next-ball-or-auto-simulate-button-to-progress-the-match",
+      "title": "Implement a match simulation screen that displays a live-style scorecard during a simulated match: current batsmen, bowler, score, overs, fall of wickets, and recent ball-by-ball commentary. Show a 'Next Ball' or 'Auto-Simulate' button to progress the match.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-bold-cricket-themed-visual-design-dark-green-pitch-inspired-background-gold-and-white-accent-colors-cricket-inspired-typography-stadium-atmosphere-ui-with-card-based-layouts-for-teams-and-scores-enforce-this-style-consistently-across-all-screens",
+      "title": "Apply a bold cricket-themed visual design: dark green pitch-inspired background, gold and white accent colors, cricket-inspired typography, stadium-atmosphere UI with card-based layouts for teams and scores. Enforce this style consistently across all screens.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Support all three cricket formats: Test, ODI, and T20",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "IPL (Indian Premier League) tournament mode with teams",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Domestic cricket leagues/tournaments",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "BBL (Big Bash League) tournament mode with teams",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "All international country teams playable",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "User login and authentication/security system",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Create a backend data model for all international cricket country teams (e.g., India, Australia, England, Pakistan, South Africa, New Zealand, West Indies, Sri Lanka, Bangladesh, Afghanistan, Zimbabwe, Ireland, and others) with attributes: team name, country code, jersey color, squad roster (player names, batting/bowling ratings).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Implement three cricket match formats: Test (5-day, up to 2 innings each), ODI (50 overs per side), and T20 (20 overs per side). The game engine must simulate match outcomes ball by ball including runs scored, wickets, extras, and innings completion based on format rules.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "2d",
+  "projectName": "Cricket Game",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

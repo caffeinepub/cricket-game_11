@@ -1,0 +1,201 @@
+{
+  "kind": "build_request",
+  "title": "Cricket Game with Multi-Format, IPL/BBL/Domestic Leagues, Country Teams & Login",
+  "projectName": "Cricket Premier",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Implement Internet Identity-based user authentication so users must log in before accessing any game features. Display a login screen with a 'Login with Internet Identity' button. After login, show the user's principal ID and a logout option.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "login security"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Unauthenticated users see a login page and cannot access game content",
+        "Clicking 'Login with Internet Identity' triggers Internet Identity authentication",
+        "After successful login, the user is redirected to the main dashboard",
+        "User principal ID is stored and displayed in the UI",
+        "Logout button clears the session and returns to the login screen"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Create a backend data model for all international cricket country teams (e.g., India, Australia, England, Pakistan, South Africa, New Zealand, West Indies, Sri Lanka, Bangladesh, Afghanistan, Zimbabwe, Ireland, and others) with attributes: team name, country code, jersey color, squad roster (player names, batting/bowling ratings).",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "all country teams"
+        ]
+      },
+      "acceptanceCriteria": [
+        "At least 12 international teams are seeded in the backend",
+        "Each team has name, country code, jersey color, and a squad of players",
+        "Each player has batting rating and bowling rating attributes",
+        "Backend exposes a query to list all teams and fetch team details by ID"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Implement three cricket match formats: Test (5-day, up to 2 innings each), ODI (50 overs per side), and T20 (20 overs per side). The game engine must simulate match outcomes ball by ball including runs scored, wickets, extras, and innings completion based on format rules.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "all three formate"
+        ]
+      },
+      "acceptanceCriteria": [
+        "T20 format simulates 20 overs per innings",
+        "ODI format simulates 50 overs per innings",
+        "Test format simulates up to 2 innings per team over a match",
+        "Match simulation produces a scorecard with runs, wickets, overs",
+        "Match result (win/loss/draw/tie) is computed and stored"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Create an IPL (Indian Premier League) tournament mode with all 10 IPL franchise teams (e.g., Mumbai Indians, Chennai Super Kings, Royal Challengers Bangalore, Kolkata Knight Riders, Delhi Capitals, Punjab Kings, Rajasthan Royals, Sunrisers Hyderabad, Lucknow Super Giants, Gujarat Titans). Use T20 format. Include a group stage (round-robin) and knockout rounds (Qualifier 1, Eliminator, Qualifier 2, Final).",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "ipl"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All 10 IPL teams are available with names and colors",
+        "Tournament generates a full round-robin group stage schedule",
+        "Points table tracks wins, losses, and net run rate",
+        "Top 4 teams advance to knockout rounds",
+        "Final match determines the IPL champion",
+        "Tournament progress and results are persisted in the backend"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Create a BBL (Big Bash League) tournament mode with all 8 BBL franchise teams (Sydney Sixers, Sydney Thunder, Melbourne Stars, Melbourne Renegades, Brisbane Heat, Adelaide Strikers, Hobart Hurricanes, Perth Scorchers). Use T20 format with a group stage and finals series.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "BBl"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All 8 BBL teams are available with names and colors",
+        "Tournament generates a round-robin group stage schedule",
+        "Points table tracks wins, losses, and net run rate",
+        "Top teams advance to finals series",
+        "Finals series determines the BBL champion",
+        "Tournament progress and results are persisted"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Create a Domestic cricket tournament mode representing major domestic leagues (e.g., Ranji Trophy - India, Sheffield Shield - Australia, County Championship - England). Allow selection of domestic teams per league. Support both multi-day (Test-like) and limited-overs format depending on the selected domestic competition.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "Domest games"
+        ]
+      },
+      "acceptanceCriteria": [
+        "At least 3 domestic competitions are available (Ranji Trophy, Sheffield Shield, County Championship)",
+        "Each domestic league has its own set of teams",
+        "Players can start a domestic tournament and simulate matches",
+        "Standings/points tables are shown per domestic competition",
+        "Results are saved to the backend"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Build a main dashboard that lets the authenticated user choose between: International (country vs country) matches, IPL tournament, BBL tournament, and Domestic leagues. Show ongoing and completed tournaments/matches for the logged-in user.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Dashboard displays four clearly labelled sections: International, IPL, BBL, Domestic",
+        "Each section is accessible via a navigation card or tab",
+        "Active/ongoing games and completed results are visible",
+        "Only authenticated users can see the dashboard"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Implement a match simulation screen that displays a live-style scorecard during a simulated match: current batsmen, bowler, score, overs, fall of wickets, and recent ball-by-ball commentary. Show a 'Next Ball' or 'Auto-Simulate' button to progress the match.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Scorecard updates after each simulated ball/over",
+        "Current batting and bowling partnerships are displayed",
+        "Recent ball-by-ball commentary is shown (e.g., '4! Cover drive', 'OUT! Caught at mid-on')",
+        "Innings summary and match result screen shown at match end"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "text": "Apply a bold cricket-themed visual design: dark green pitch-inspired background, gold and white accent colors, cricket-inspired typography, stadium-atmosphere UI with card-based layouts for teams and scores. Enforce this style consistently across all screens.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All screens use the dark green + gold + white color palette",
+        "Cricket-themed iconography and layout patterns are consistent",
+        "Typography is bold and legible on dark backgrounds",
+        "Login screen, dashboard, team selection, and match screens all share the same visual theme"
+      ]
+    }
+  ],
+  "constraints": [
+    "Authentication must use Internet Identity only — no username/password or third-party auth",
+    "All game state and match data must be persisted in the Motoko backend actor",
+    "All Motoko logic must remain in a single main actor file (backend/main.mo)",
+    "Do not edit any files under frontend/src/hooks/ or frontend/src/components/ui"
+  ],
+  "nonGoals": [
+    "Real-time multiplayer or WebSocket-based live match streaming",
+    "Actual live cricket data feeds or third-party sports APIs",
+    "Mobile app or React Native version",
+    "Payment or in-app purchase features",
+    "Video or audio commentary",
+    "Fantasy cricket or betting features"
+  ],
+  "imageRequirements": {
+    "required": [
+      "Cricket stadium panoramic banner with floodlights and green pitch at night (stadium-banner.dim_1200x400.png)",
+      "Cricket ball close-up illustration with red leather and white seam on dark background (cricket-ball-icon.dim_128x128.png)",
+      "Cricket bat silhouette icon in gold on dark green background (cricket-bat-icon.dim_128x128.png)",
+      "IPL trophy cup golden illustration on dark background (ipl-trophy.dim_256x256.png)",
+      "BBL Big Bash lightning bolt logo-style graphic in teal and gold (bbl-logo.dim_256x256.png)"
+    ],
+    "edits": []
+  }
+}

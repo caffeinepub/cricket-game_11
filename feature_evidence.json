@@ -1,0 +1,147 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-implement-internet-identity-based-user-authentication-so-users-must-log-in-before-accessing-any-game-features-display-a-login-screen-with-a-login-with-internet-identity-button-after-login-show-the-user-s-principal-id-and-a-logout-option",
+      "featureTitle": "Implement Internet Identity-based user authentication so users must log in before accessing any game features. Display a login screen with a 'Login with Internet Identity' button. After login, show the user's principal ID and a logout option.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/LoginScreen.tsx",
+        "frontend/src/components/ProfileSetupModal.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-an-ipl-indian-premier-league-tournament-mode-with-all-10-ipl-franchise-teams-e-g-mumbai-indians-chennai-super-kings-royal-challengers-bangalore-kolkata-knight-riders-delhi-capitals-punjab-kings-rajasthan-royals-sunrisers-hyderabad-lucknow-super-giants-gujarat-titans-use-t20-format-include-a-group-stage-round-robin-and-knockout-rounds-qualifier-1-eliminator-qualifier-2-final",
+      "featureTitle": "Create an IPL (Indian Premier League) tournament mode with all 10 IPL franchise teams (e.g., Mumbai Indians, Chennai Super Kings, Royal Challengers Bangalore, Kolkata Knight Riders, Delhi Capitals, Punjab Kings, Rajasthan Royals, Sunrisers Hyderabad, Lucknow Super Giants, Gujarat Titans). Use T20 format. Include a group stage (round-robin) and knockout rounds (Qualifier 1, Eliminator, Qualifier 2, Final).",
+      "files": [
+        "frontend/src/components/TournamentPointsTable.tsx",
+        "frontend/src/pages/IPLTournament.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-bbl-big-bash-league-tournament-mode-with-all-8-bbl-franchise-teams-sydney-sixers-sydney-thunder-melbourne-stars-melbourne-renegades-brisbane-heat-adelaide-strikers-hobart-hurricanes-perth-scorchers-use-t20-format-with-a-group-stage-and-finals-series",
+      "featureTitle": "Create a BBL (Big Bash League) tournament mode with all 8 BBL franchise teams (Sydney Sixers, Sydney Thunder, Melbourne Stars, Melbourne Renegades, Brisbane Heat, Adelaide Strikers, Hobart Hurricanes, Perth Scorchers). Use T20 format with a group stage and finals series.",
+      "files": [
+        "frontend/src/pages/BBLTournament.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-domestic-cricket-tournament-mode-representing-major-domestic-leagues-e-g-ranji-trophy-india-sheffield-shield-australia-county-championship-england-allow-selection-of-domestic-teams-per-league-support-both-multi-day-test-like-and-limited-overs-format-depending-on-the-selected-domestic-competition",
+      "featureTitle": "Create a Domestic cricket tournament mode representing major domestic leagues (e.g., Ranji Trophy - India, Sheffield Shield - Australia, County Championship - England). Allow selection of domestic teams per league. Support both multi-day (Test-like) and limited-overs format depending on the selected domestic competition.",
+      "files": [
+        "frontend/src/pages/DomesticTournament.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-a-main-dashboard-that-lets-the-authenticated-user-choose-between-international-country-vs-country-matches-ipl-tournament-bbl-tournament-and-domestic-leagues-show-ongoing-and-completed-tournaments-matches-for-the-logged-in-user",
+      "featureTitle": "Build a main dashboard that lets the authenticated user choose between: International (country vs country) matches, IPL tournament, BBL tournament, and Domestic leagues. Show ongoing and completed tournaments/matches for the logged-in user.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/DashboardCard.tsx",
+        "frontend/src/pages/Dashboard.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-a-match-simulation-screen-that-displays-a-live-style-scorecard-during-a-simulated-match-current-batsmen-bowler-score-overs-fall-of-wickets-and-recent-ball-by-ball-commentary-show-a-next-ball-or-auto-simulate-button-to-progress-the-match",
+      "featureTitle": "Implement a match simulation screen that displays a live-style scorecard during a simulated match: current batsmen, bowler, score, overs, fall of wickets, and recent ball-by-ball commentary. Show a 'Next Ball' or 'Auto-Simulate' button to progress the match.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/CommentaryFeed.tsx",
+        "frontend/src/components/MatchResultSummary.tsx",
+        "frontend/src/components/Scorecard.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-apply-a-bold-cricket-themed-visual-design-dark-green-pitch-inspired-background-gold-and-white-accent-colors-cricket-inspired-typography-stadium-atmosphere-ui-with-card-based-layouts-for-teams-and-scores-enforce-this-style-consistently-across-all-screens",
+      "featureTitle": "Apply a bold cricket-themed visual design: dark green pitch-inspired background, gold and white accent colors, cricket-inspired typography, stadium-atmosphere UI with card-based layouts for teams and scores. Enforce this style consistently across all screens.",
+      "files": [
+        "frontend/src/index.css",
+        "frontend/tailwind.config.js"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-9"
+      ],
+      "confidence": "high"
+    }
+  ]
+}
