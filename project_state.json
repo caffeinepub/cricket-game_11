@@ -1,14 +1,20 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
-  "summary": "A cricket game app featuring all three formats (Test, ODI, T20), IPL, Domestic, and BBL leagues with international country teams and login/security system.",
+  "projectStateVersion": 11,
+  "summary": "A cricket game app featuring all three formats (Test, ODI, T20), IPL, Domestic, and BBL leagues with international country teams and login/security system. Now includes a 3D match view using Three.js (React Three Fiber) with animated ball delivery, fielder positions, and stadium atmosphere effects.",
   "architectural_notes": [
     "Game must support multiple league/tournament structures: IPL, BBL, Domestic, and international formats",
-    "Authentication system required for user login and security"
+    "Authentication system required for user login and security",
+    "Internet Identity login was broken in production; fix involves correctly configuring auth client canister URL for deployed environment",
+    "Login page buffering fix: optimize Internet Identity auth flow to prevent UI freeze/loading hang during authentication on the deployed site",
+    "Login page fix v3: use synchronous/immediate AuthClient init, aggressive 3-second timeout, login button available immediately without waiting for initialization",
+    "3D match view uses React Three Fiber (Three.js) for rendering pitch, stadium, ball trajectory, and fielder markers within the match simulation screen"
   ],
-  "known_issues": [],
+  "known_issues": [
+    "Login with Internet Identity does not work on the deployed production site",
+    "Login page buffers/hangs on the deployed site, preventing users from completing Internet Identity login"
+  ],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Cricket stadium panoramic banner with floodlights and green pitch at night (stadium-banner.dim_1200x400.png)\n- Cricket ball close-up illustration with red leather and white seam on dark background (cricket-ball-icon.dim_128x128.png)\n- Cricket bat silhouette icon in gold on dark green background (cricket-bat-icon.dim_128x128.png)\n- IPL trophy cup golden illustration on dark background (ipl-trophy.dim_256x256.png)\n- BBL Big Bash lightning bolt logo-style graphic in teal and gold (bbl-logo.dim_256x256.png)",
   "existing_features": [
     {
       "id": "feature-implement-internet-identity-based-user-authentication-so-users-must-log-in-before-accessing-any-game-features-display-a-login-screen-with-a-login-with-internet-identity-button-after-login-show-the-user-s-principal-id-and-a-logout-option",
@@ -65,6 +71,86 @@
         "REQ-9"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-fix-the-internet-identity-login-flow-so-that-authentication-works-correctly-on-the-deployed-production-site-update-the-authclient-initialization-in-the-useinternetidentity-hook-to-correctly-resolve-the-internet-identity-canister-url-for-the-production-icp-environment-ensure-the-identityprovider-url-is-dynamically-set-based-on-whether-the-app-is-running-locally-http-localhost-4943-canisterid-or-in-production-https-identity-ic0-app-also-ensure-url-parameters-used-during-the-oauth-delegation-callback-canisterid-delegation-tokens-are-correctly-read-from-both-query-strings-and-hash-fragments-via-the-existing-urlparams-utility-and-that-sessionstorage-persistence-of-the-identity-survives-page-reloads-post-login",
+      "title": "Fix the Internet Identity login flow so that authentication works correctly on the deployed production site. Update the AuthClient initialization in the useInternetIdentity hook to correctly resolve the Internet Identity canister URL for the production ICP environment. Ensure the identityProvider URL is dynamically set based on whether the app is running locally (http://localhost:4943?canisterId=...) or in production (https://identity.ic0.app). Also ensure URL parameters used during the OAuth/delegation callback (canisterId, delegation tokens) are correctly read from both query strings and hash fragments via the existing urlParams utility, and that sessionStorage persistence of the identity survives page reloads post-login.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-login-page-buffering-hanging-issue-on-the-deployed-production-site-the-loginscreen-component-must-not-show-an-indefinite-loading-buffering-state-ensure-the-authclient-initialization-completes-promptly-with-a-clear-loading-indicator-that-resolves-within-a-reasonable-timeout-e-g-5-seconds-if-initialization-fails-or-times-out-display-a-user-friendly-error-message-with-a-retry-option-instead-of-hanging-indefinitely",
+      "title": "Fix the login page buffering/hanging issue on the deployed production site. The LoginScreen component must not show an indefinite loading/buffering state. Ensure the AuthClient initialization completes promptly, with a clear loading indicator that resolves within a reasonable timeout (e.g., 5 seconds). If initialization fails or times out, display a user-friendly error message with a retry option instead of hanging indefinitely.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-internet-identity-login-flow-completes-successfully-on-the-deployed-production-site-the-authconfig-utility-in-frontend-src-lib-authconfig-ts-must-correctly-return-https-identity-ic0-app-as-the-identity-provider-when-running-in-production-non-localhost-the-authclient-must-be-initialized-with-this-correct-provider-url-so-the-delegation-popup-opens-and-returns-successfully-allowing-the-user-to-authenticate",
+      "title": "Ensure the Internet Identity login flow completes successfully on the deployed production site. The authConfig utility in frontend/src/lib/authConfig.ts must correctly return https://identity.ic0.app as the identity provider when running in production (non-localhost). The AuthClient must be initialized with this correct provider URL so the delegation popup opens and returns successfully, allowing the user to authenticate.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-rewrite-the-loginscreen-component-and-app-tsx-authentication-initialization-to-eliminate-all-buffering-and-hanging-states-on-the-deployed-production-site-the-login-button-must-be-rendered-and-clickable-immediately-on-page-load-without-waiting-for-any-async-initialization-replace-the-current-authclient-initialization-approach-with-a-lazy-initialization-pattern-create-the-authclient-only-when-the-user-clicks-the-login-button-not-on-mount-remove-all-useeffect-based-initialization-from-the-login-screen-set-a-hard-3-second-timeout-on-any-authclient-create-call-if-it-does-not-resolve-treat-the-user-as-unauthenticated-and-allow-them-to-retry-the-loading-spinner-if-shown-at-all-must-disappear-within-3-seconds-maximum-never-hang-indefinitely",
+      "title": "Rewrite the LoginScreen component and App.tsx authentication initialization to eliminate all buffering and hanging states on the deployed production site. The login button must be rendered and clickable immediately on page load without waiting for any async initialization. Replace the current AuthClient initialization approach with a lazy-initialization pattern: create the AuthClient only when the user clicks the login button, not on mount. Remove all useEffect-based initialization from the login screen. Set a hard 3-second timeout on any AuthClient.create() call; if it does not resolve, treat the user as unauthenticated and allow them to retry. The loading spinner, if shown at all, must disappear within 3 seconds maximum — never hang indefinitely.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refactor-app-tsx-to-remove-the-6-second-initialization-timeout-and-replace-it-with-an-immediate-unauthenticated-default-state-on-first-render-assume-the-user-is-not-authenticated-and-show-the-login-screen-instantly-after-the-login-action-completes-success-or-failure-update-authentication-state-accordingly-do-not-block-the-ui-on-any-authclient-create-or-isauthenticated-call-during-the-initial-render-cycle",
+      "title": "Refactor App.tsx to remove the 6-second initialization timeout and replace it with an immediate unauthenticated default state. On first render, assume the user is not authenticated and show the login screen instantly. After the login action completes (success or failure), update authentication state accordingly. Do not block the UI on any AuthClient.create() or isAuthenticated() call during the initial render cycle.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-cricketstadium3d-component-using-react-three-fiber-react-three-fiber-and-react-three-drei-that-renders-an-immersive-3d-cricket-stadium-scene-from-an-elevated-broadcast-style-camera-angle-the-scene-must-include-a-flat-green-pitch-strip-in-the-center-an-outfield-ground-plane-with-boundary-rope-marker-basic-stadium-stands-around-the-boundary-with-crowd-atmosphere-simple-geometric-shapes-representing-crowd-tiers-and-ambient-directional-lighting-with-a-warm-floodlight-style-glow-the-camera-should-be-positioned-above-and-behind-the-batsman-end-looking-down-the-pitch-toward-the-bowler-end",
+      "title": "Create a new CricketStadium3D component using React Three Fiber (@react-three/fiber) and @react-three/drei that renders an immersive 3D cricket stadium scene from an elevated broadcast-style camera angle. The scene must include: a flat green pitch strip in the center, an outfield ground plane with boundary rope marker, basic stadium stands around the boundary with crowd atmosphere (simple geometric shapes representing crowd tiers), and ambient + directional lighting with a warm floodlight-style glow. The camera should be positioned above and behind the batsman end, looking down the pitch toward the bowler end.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-animated-ball-delivery-trajectory-to-the-cricketstadium3d-component-for-each-new-ball-event-emitted-by-the-match-simulator-animate-a-cricket-ball-small-sphere-traveling-from-the-bowler-end-to-the-batsman-end-along-a-realistic-arc-parabolic-trajectory-the-ball-color-should-be-red-white-based-on-match-format-the-animation-should-complete-within-1-1-5-seconds-before-the-next-delivery-can-begin-on-wicket-events-add-a-stumps-hit-visual-effect-stumps-fly-scatter-on-six-events-animate-the-ball-continuing-over-the-boundary",
+      "title": "Add animated ball delivery trajectory to the CricketStadium3D component. For each new ball event emitted by the match simulator, animate a cricket ball (small sphere) traveling from the bowler end to the batsman end along a realistic arc (parabolic trajectory). The ball color should be red/white based on match format. The animation should complete within 1–1.5 seconds before the next delivery can begin. On wicket events, add a stumps-hit visual effect (stumps fly/scatter). On six events, animate the ball continuing over the boundary.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-11-fielder-position-markers-to-the-cricketstadium3d-scene-each-fielder-is-represented-as-a-small-colored-cylinder-or-capsule-on-the-ground-fielder-positions-should-be-dynamically-repositioned-based-on-match-situation-attacking-field-more-slips-gully-when-batting-team-has-few-wickets-lost-defensive-field-spread-outfield-when-batting-team-is-chasing-a-big-total-or-batting-team-is-strong-pass-current-match-state-wickets-fallen-overs-bowled-run-rate-as-props-to-drive-fielder-repositioning",
+      "title": "Add 11 fielder position markers to the CricketStadium3D scene. Each fielder is represented as a small colored cylinder or capsule on the ground. Fielder positions should be dynamically repositioned based on match situation: attacking field (more slips/gully) when batting team has few wickets lost, defensive field (spread outfield) when batting team is chasing a big total or batting team is strong. Pass current match state (wickets fallen, overs bowled, run rate) as props to drive fielder repositioning.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-integrate-the-cricketstadium3d-component-into-the-existing-internationalmatch-tsx-match-simulation-screen-the-3d-view-should-occupy-the-upper-portion-of-the-match-screen-approximately-50-60-height-above-the-existing-live-scorecard-scorecard-component-and-commentary-feed-commentaryfeed-component-on-mobile-small-screens-the-3d-view-should-be-collapsible-or-reduced-in-height-the-3d-view-receives-the-current-ball-event-and-match-state-as-props-so-animations-trigger-in-sync-with-each-next-ball-or-auto-simulate-step-ensure-no-existing-match-simulation-logic-backend-calls-or-scorecard-functionality-is-broken",
+      "title": "Integrate the CricketStadium3D component into the existing InternationalMatch.tsx match simulation screen. The 3D view should occupy the upper portion of the match screen (approximately 50–60% height) above the existing live scorecard (Scorecard component) and commentary feed (CommentaryFeed component). On mobile/small screens, the 3D view should be collapsible or reduced in height. The 3D view receives the current ball event and match state as props so animations trigger in sync with each 'Next Ball' or 'Auto-Simulate' step. Ensure no existing match simulation logic, backend calls, or scorecard functionality is broken.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-stadium-atmosphere-particle-visual-effects-to-the-cricketstadium3d-scene-a-subtle-crowd-noise-visual-effect-rippling-crowd-wave-animation-as-colored-particles-on-the-stands-triggered-on-six-and-wicket-events-and-floodlight-cone-effects-semi-transparent-light-shafts-from-four-corner-towers-that-give-the-scene-a-night-match-stadium-feel-these-effects-should-be-lightweight-and-not-cause-frame-rate-drops-below-30fps-on-average-hardware",
+      "title": "Add stadium atmosphere particle/visual effects to the CricketStadium3D scene: a subtle crowd noise visual effect (rippling crowd wave animation as colored particles on the stands) triggered on six and wicket events, and floodlight cone effects (semi-transparent light shafts from four corner towers) that give the scene a night-match stadium feel. These effects should be lightweight and not cause frame rate drops below 30fps on average hardware.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -119,9 +205,15 @@
         "REQ-3"
       ],
       "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Add immersive 3D match view using Three.js (React Three Fiber): 3D stadium/pitch scene, animated ball delivery trajectory, fielder position markers, stadium atmosphere/crowd effects, integrated with existing match simulation screen",
+      "reqIds": [],
+      "status": "pending"
     }
   ],
-  "gameProjectType": "2d",
+  "gameProjectType": "3d",
   "projectName": "Cricket Game",
   "clarification_mode": "instant",
   "clarification_rounds": 0

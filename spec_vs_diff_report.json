@@ -1,107 +1,32 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-25T05:35:19.882Z",
-  "summary": "The diff implements most of the required features including Internet Identity authentication, backend data models, match simulation, IPL/BBL/Domestic tournaments, dashboard, match simulation screen, and cricket-themed UI. However, several specific acceptance criteria appear to be missing or only partially implemented based on the available evidence.",
+  "generatedAt": "2026-02-25T06:42:13.480Z",
+  "summary": "The diff adds a CricketStadium3D component and integrates it into InternationalMatch.tsx. Most core requirements appear implemented, but several specific acceptance criteria details are unclear or missing from the truncated diff. The implementation covers the main structural requirements (REQ-15 through REQ-18) with visible evidence, but REQ-19's crowd wave particle effects and floodlight cone effects are not clearly confirmed in the truncated content.",
   "missing_requirements": [
     {
-      "id": "REQ-2",
-      "requirement": "Backend exposes a query to list all teams and fetch team details by ID",
-      "reason": "The backend main.mo is truncated and frontend useQueries.ts has getAllTeams but no getTeamById hook is visible. The AC requires fetching team details by ID specifically.",
+      "id": "REQ-19",
+      "requirement": "Add stadium atmosphere particle/visual effects: rippling crowd wave animation as colored particles on the stands triggered on six and wicket events, and floodlight cone effects (semi-transparent light shafts from four corner towers) for a night-match stadium feel.",
+      "reason": "The CricketStadium3D.tsx file is truncated and does not show implementation of crowd wave particle effects or floodlight cone shaft geometry. The file summary mentions only a TypeScript type annotation fix, not these atmosphere effects. Stars from @react-three/drei are imported but floodlight cones and particle crowd wave effects are not confirmed present.",
       "evidence": [
-        "backend/main.mo",
-        "frontend/src/hooks/useQueries.ts"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "requirement": "Test format simulates up to 2 innings per team over a match",
-      "reason": "The matchSimulator.ts is truncated and main.mo is truncated. The MatchFormat type includes #test but no evidence of a 2-innings-per-team Test match simulation flow is visible in the diff. The InternationalMatch page is omitted from the diff summary.",
-      "evidence": [
-        "frontend/src/lib/matchSimulator.ts",
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "requirement": "Qualifier 1, Eliminator, Qualifier 2, Final knockout rounds for IPL",
-      "reason": "The IPLTournament.tsx file is omitted from the diff due to limits. There is no visible evidence of the specific IPL knockout format (Qualifier 1, Eliminator, Qualifier 2, Final) being implemented.",
-      "evidence": []
-    },
-    {
-      "id": "REQ-4",
-      "requirement": "Points table tracks net run rate accurately",
-      "reason": "TournamentPointsTable.tsx computes NRR using a simplified fixed increment (+0.5 for win, -0.3 for loss) rather than actual run rate differential calculation, which does not satisfy accurate NRR tracking.",
-      "evidence": [
-        "frontend/src/components/TournamentPointsTable.tsx"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "requirement": "Points table tracks net run rate accurately for BBL",
-      "reason": "Same simplified NRR calculation issue applies to BBL tournament standings via the shared TournamentPointsTable component.",
-      "evidence": [
-        "frontend/src/components/TournamentPointsTable.tsx"
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "requirement": "Fall of wickets displayed in the match simulation scorecard",
-      "reason": "The Scorecard.tsx component displays current batsmen, bowler, score, and overs but does not show a fall of wickets section.",
-      "evidence": [
-        "frontend/src/components/Scorecard.tsx"
+        "frontend/src/components/CricketStadium3D.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Profile setup modal requiring users to enter a display name before playing",
-      "reason": "The build request does not mention a user profile setup flow or requiring a display name. This ProfileSetupModal is an extra feature not specified in any requirement.",
+      "description": "Stars (@react-three/drei) background effect added to the stadium scene",
+      "reason": "The import of Stars from @react-three/drei is visible in the diff but was not requested in any requirement. A night-match floodlit feel was requested via floodlight cones, not a star field background.",
       "evidence": [
-        "frontend/src/components/ProfileSetupModal.tsx",
-        "frontend/src/App.tsx"
-      ]
-    },
-    {
-      "description": "caffeine.ai attribution link in the footer",
-      "reason": "The build request does not mention any attribution or branding for caffeine.ai in the footer.",
-      "evidence": [
-        "frontend/src/components/Footer.tsx"
+        "frontend/src/components/CricketStadium3D.tsx"
       ]
     }
   ],
-  "confidence": 0.62,
+  "confidence": 0.52,
   "changed_files": [
-    "all_files_summary.json",
-    "backend/main.mo",
     "frontend-file-summaries.txt",
-    "frontend/index.css",
-    "frontend/index.html",
-    "frontend/src/App.tsx",
-    "frontend/src/components/CommentaryFeed.tsx",
-    "frontend/src/components/DashboardCard.tsx",
-    "frontend/src/components/Footer.tsx",
-    "frontend/src/components/Header.tsx",
-    "frontend/src/components/LoginScreen.tsx",
-    "frontend/src/components/MatchResultSummary.tsx",
-    "frontend/src/components/ProfileSetupModal.tsx",
-    "frontend/src/components/Scorecard.tsx",
-    "frontend/src/components/TeamSelector.tsx",
-    "frontend/src/components/TournamentPointsTable.tsx",
-    "frontend/src/hooks/useActor.ts",
-    "frontend/src/hooks/useInternetIdentity.ts",
-    "frontend/src/hooks/useQueries.ts",
-    "frontend/src/index.css",
-    "frontend/src/lib/cricketData.ts",
-    "frontend/src/lib/matchSimulator.ts",
-    "frontend/src/main.tsx",
-    "frontend/src/pages/BBLTournament.tsx",
-    "frontend/src/pages/Dashboard.tsx",
-    "frontend/src/pages/DomesticTournament.tsx",
-    "frontend/src/pages/IPLTournament.tsx",
+    "frontend/src/components/CricketStadium3D.tsx",
     "frontend/src/pages/InternationalMatch.tsx",
-    "frontend/src/utils/urlParams.ts",
-    "frontend/tailwind.config.js",
     "project_state.json"
   ]
 }

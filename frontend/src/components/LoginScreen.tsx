@@ -1,108 +1,190 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
-import { Loader2, Shield, Trophy, Zap } from 'lucide-react';
 
 export default function LoginScreen() {
-  const { login, clear, loginStatus, identity } = useInternetIdentity();
+  const { login, loginStatus } = useInternetIdentity();
   const queryClient = useQueryClient();
+  const [error, setError] = useState<string | null>(null);
 
-  const isAuthenticated = !!identity;
   const isLoggingIn = loginStatus === 'logging-in';
 
-  const handleAuth = async () => {
-    if (isAuthenticated) {
-      await clear();
-      queryClient.clear();
-    } else {
-      try {
-        await login();
-      } catch (error: unknown) {
-        const err = error as Error;
-        if (err?.message === 'User is already authenticated') {
-          await clear();
-          setTimeout(() => login(), 300);
-        }
+  const handleLogin = async () => {
+    setError(null);
+    try {
+      await login();
+    } catch (err: any) {
+      console.error('Login error:', err);
+      if (err?.message === 'User is already authenticated') {
+        // Already authenticated — clear cache and retry
+        queryClient.clear();
+        setTimeout(() => login(), 400);
+      } else {
+        setError(
+          err?.message ||
+            'Login failed. Please try again or use a different browser.'
+        );
       }
     }
   };
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-background">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'repeating-linear-gradient(45deg, oklch(0.82 0.18 85) 0, oklch(0.82 0.18 85) 1px, transparent 0, transparent 50%)',
-          backgroundSize: '20px 20px'
-        }} />
-      </div>
+  const handleRetry = () => {
+    setError(null);
+    window.location.reload();
+  };
 
-      {/* Stadium banner */}
-      <div className="w-full max-w-4xl mb-8 rounded-xl overflow-hidden shadow-stadium relative">
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Hero / Banner */}
+      <div className="relative overflow-hidden">
         <img
           src="/assets/generated/stadium-banner.dim_1200x400.png"
           alt="Cricket Stadium"
-          className="w-full h-48 md:h-64 object-cover"
+          className="w-full h-48 sm:h-64 object-cover opacity-80"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-gold tracking-widest uppercase">
-            Cricket Premier
-          </h1>
-          <p className="font-heading text-lg text-foreground/80 mt-1 tracking-wide">
-            The Ultimate Cricket Simulation Experience
-          </p>
-        </div>
-      </div>
-
-      {/* Feature highlights */}
-      <div className="grid grid-cols-3 gap-4 mb-8 max-w-2xl w-full px-4">
-        {[
-          { icon: <Trophy className="w-6 h-6 text-gold" />, label: 'IPL & BBL', desc: 'Franchise Leagues' },
-          { icon: <Zap className="w-6 h-6 text-gold" />, label: 'T20 · ODI · Test', desc: '3 Formats' },
-          { icon: <Shield className="w-6 h-6 text-gold" />, label: '12+ Nations', desc: 'International Teams' },
-        ].map((f) => (
-          <div key={f.label} className="card-stadium rounded-xl p-4 text-center">
-            <div className="flex justify-center mb-2">{f.icon}</div>
-            <div className="font-heading font-bold text-foreground text-sm">{f.label}</div>
-            <div className="text-muted-foreground text-xs">{f.desc}</div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/90" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center px-4">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <img
+                src="/assets/generated/cricket-ball-icon.dim_128x128.png"
+                alt="Cricket Ball"
+                className="w-10 h-10"
+              />
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight drop-shadow-lg">
+                Cricket Game
+              </h1>
+              <img
+                src="/assets/generated/cricket-bat-icon.dim_128x128.png"
+                alt="Cricket Bat"
+                className="w-10 h-10"
+              />
+            </div>
+            <p className="text-muted-foreground text-sm sm:text-base">
+              The ultimate cricket simulation experience
+            </p>
           </div>
-        ))}
-      </div>
-
-      {/* Login card */}
-      <div className="card-stadium rounded-2xl p-8 max-w-md w-full mx-4 text-center">
-        <div className="flex justify-center mb-4">
-          <img src="/assets/generated/cricket-ball-icon.dim_128x128.png" alt="Cricket Ball" className="w-16 h-16" />
         </div>
-        <h2 className="font-display text-2xl font-bold text-foreground mb-2">Welcome to the Crease</h2>
-        <p className="text-muted-foreground text-sm mb-6">
-          Sign in securely to access all cricket formats, tournaments, and match simulations.
-        </p>
-
-        <Button
-          onClick={handleAuth}
-          disabled={isLoggingIn}
-          className="w-full h-12 text-base font-heading font-bold tracking-wide gold-gradient text-background hover:opacity-90 transition-opacity border-0"
-        >
-          {isLoggingIn ? (
-            <>
-              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              Signing In...
-            </>
-          ) : (
-            <>
-              <Shield className="w-5 h-5 mr-2" />
-              Login with Internet Identity
-            </>
-          )}
-        </Button>
-
-        <p className="text-muted-foreground text-xs mt-4">
-          Secured by Internet Computer's decentralized identity system
-        </p>
       </div>
+
+      {/* Login Card */}
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          <div className="bg-card border border-border rounded-2xl shadow-xl p-8 text-center">
+            {/* Icon */}
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <img
+                src="/assets/generated/cricket-ball-icon.dim_128x128.png"
+                alt="Cricket"
+                className="w-12 h-12"
+              />
+            </div>
+
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Welcome to Cricket Game
+            </h2>
+            <p className="text-muted-foreground mb-8 text-sm leading-relaxed">
+              Sign in to play IPL, BBL, International, and Domestic cricket
+              tournaments. Your progress is saved securely on the blockchain.
+            </p>
+
+            {/* Error message */}
+            {error && (
+              <div className="mb-6 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-destructive text-sm">
+                <p className="mb-2">{error}</p>
+                <button
+                  onClick={handleRetry}
+                  className="text-xs underline hover:no-underline font-medium"
+                >
+                  Reload &amp; Retry
+                </button>
+              </div>
+            )}
+
+            {/* Login Button — always enabled, never blocked by initialization */}
+            <button
+              onClick={handleLogin}
+              disabled={isLoggingIn}
+              className="w-full py-3 px-6 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-base shadow-md hover:shadow-lg"
+            >
+              {isLoggingIn ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                  Connecting...
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-5 h-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                  </svg>
+                  Login with Internet Identity
+                </>
+              )}
+            </button>
+
+            {/* Reload button shown when there's an error */}
+            {error && !isLoggingIn && (
+              <button
+                onClick={handleRetry}
+                className="mt-3 w-full py-2 px-6 bg-muted text-foreground font-medium rounded-xl hover:bg-muted/80 transition-all duration-200 text-sm border border-border"
+              >
+                🔄 Reload Page
+              </button>
+            )}
+
+            {/* Info */}
+            <p className="mt-6 text-xs text-muted-foreground">
+              Internet Identity is a secure, privacy-preserving authentication
+              system on the Internet Computer. No passwords required.
+            </p>
+
+            {/* Features */}
+            <div className="mt-8 grid grid-cols-2 gap-3 text-left">
+              {[
+                { icon: '🏏', label: 'IPL Tournament' },
+                { icon: '🦘', label: 'BBL Tournament' },
+                { icon: '🌍', label: 'International' },
+                { icon: '🏆', label: 'Domestic Leagues' },
+              ].map((f) => (
+                <div
+                  key={f.label}
+                  className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2"
+                >
+                  <span className="text-lg">{f.icon}</span>
+                  <span className="text-xs font-medium text-foreground">
+                    {f.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="border-t border-border py-4 px-6 text-center text-sm text-muted-foreground">
+        <p>
+          Built with{' '}
+          <span className="text-destructive">♥</span>{' '}
+          using{' '}
+          <a
+            href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname || 'cricket-game')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline font-medium"
+          >
+            caffeine.ai
+          </a>{' '}
+          &copy; {new Date().getFullYear()}
+        </p>
+      </footer>
     </div>
   );
 }

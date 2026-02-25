@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import { MatchFormat, MatchResult, MatchState, Team, TournamentType, UserProfile } from '../backend';
+import type { UserProfile, Team, MatchResult } from '../backend';
+import { TournamentType, MatchFormat } from '../backend';
 
-// User Profile
+// ─── User Profile ────────────────────────────────────────────────────────────
+
 export function useGetCallerUserProfile() {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -38,9 +40,10 @@ export function useSaveCallerUserProfile() {
   });
 }
 
-// Teams
+// ─── Teams ───────────────────────────────────────────────────────────────────
+
 export function useGetAllTeams() {
-  const { actor, isFetching } = useActor();
+  const { actor, isFetching: actorFetching } = useActor();
 
   return useQuery<Team[]>({
     queryKey: ['allTeams'],
@@ -48,28 +51,27 @@ export function useGetAllTeams() {
       if (!actor) return [];
       return actor.getAllTeams();
     },
-    enabled: !!actor && !isFetching,
+    enabled: !!actor && !actorFetching,
   });
 }
 
-export function useAddTeam() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
+export function useGetTeamByName(name: string) {
+  const { actor, isFetching: actorFetching } = useActor();
 
-  return useMutation({
-    mutationFn: async ({ name, code, color, players }: { name: string; code: string; color: string; players: Array<{ name: string; battingRating: bigint; bowlingRating: bigint }> }) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.addTeam(name, code, color, players);
+  return useQuery<Team | null>({
+    queryKey: ['team', name],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getTeamByName(name);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allTeams'] });
-    },
+    enabled: !!actor && !actorFetching && !!name,
   });
 }
 
-// Tournament Teams
+// ─── Tournament Teams ─────────────────────────────────────────────────────────
+
 export function useGetTournamentTeams(tournamentType: TournamentType) {
-  const { actor, isFetching } = useActor();
+  const { actor, isFetching: actorFetching } = useActor();
 
   return useQuery<Team[]>({
     queryKey: ['tournamentTeams', tournamentType],
@@ -77,51 +79,46 @@ export function useGetTournamentTeams(tournamentType: TournamentType) {
       if (!actor) return [];
       return actor.getTournamentTeams(tournamentType);
     },
-    enabled: !!actor && !isFetching,
+    enabled: !!actor && !actorFetching,
   });
 }
 
-export function useAddTournamentTeam() {
+// ─── Tournament Matches ───────────────────────────────────────────────────────
+
+export function useGetTournamentMatches(tournamentType: TournamentType) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<MatchResult[]>({
+    queryKey: ['tournamentMatches', tournamentType],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getTournamentMatches(tournamentType);
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
+export function useRecordTournamentResult() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ tournamentType, team }: { tournamentType: TournamentType; team: Team }) => {
+    mutationFn: async (params: {
+      tournamentType: TournamentType;
+      result: MatchResult;
+    }) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.addTournamentTeam(tournamentType, team);
+      return actor.recordTournamentResult(params.tournamentType, params.result);
     },
-    onSuccess: (_, { tournamentType }) => {
-      queryClient.invalidateQueries({ queryKey: ['tournamentTeams', tournamentType] });
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['tournamentMatches', variables.tournamentType],
+      });
     },
   });
 }
 
-// Matches
-export function useGetAllMatches() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<MatchState[]>({
-    queryKey: ['allMatches'],
-    queryFn: async () => {
-      if (!actor) return [];
-      return actor.getAllMatches();
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
-export function useGetMatch(matchId: bigint | null) {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<MatchState | null>({
-    queryKey: ['match', matchId?.toString()],
-    queryFn: async () => {
-      if (!actor || matchId === null) return null;
-      return actor.getMatch(matchId);
-    },
-    enabled: !!actor && !isFetching && matchId !== null,
-  });
-}
+// ─── Matches ──────────────────────────────────────────────────────────────────
 
 export function useCreateMatch() {
   const { actor } = useActor();
@@ -154,45 +151,15 @@ export function useCreateMatch() {
   });
 }
 
-// Tournament Results
-export function useGetTournamentMatches(tournamentType: TournamentType) {
-  const { actor, isFetching } = useActor();
+export function useGetAllMatches() {
+  const { actor, isFetching: actorFetching } = useActor();
 
-  return useQuery<MatchResult[]>({
-    queryKey: ['tournamentMatches', tournamentType],
+  return useQuery({
+    queryKey: ['allMatches'],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getTournamentMatches(tournamentType);
+      return actor.getAllMatches();
     },
-    enabled: !!actor && !isFetching,
-  });
-}
-
-export function useRecordTournamentResult() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ tournamentType, result }: { tournamentType: TournamentType; result: MatchResult }) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.recordTournamentResult(tournamentType, result);
-    },
-    onSuccess: (_, { tournamentType }) => {
-      queryClient.invalidateQueries({ queryKey: ['tournamentMatches', tournamentType] });
-    },
-  });
-}
-
-// Admin check
-export function useIsCallerAdmin() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<boolean>({
-    queryKey: ['isAdmin'],
-    queryFn: async () => {
-      if (!actor) return false;
-      return actor.isCallerAdmin();
-    },
-    enabled: !!actor && !isFetching,
+    enabled: !!actor && !actorFetching,
   });
 }

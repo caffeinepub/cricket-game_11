@@ -1,77 +1,85 @@
 import React from 'react';
 import {
-  createRootRoute,
-  createRoute,
   createRouter,
+  createRoute,
+  createRootRoute,
   RouterProvider,
   Outlet,
 } from '@tanstack/react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useInternetIdentity } from './hooks/useInternetIdentity';
 import { useGetCallerUserProfile } from './hooks/useQueries';
-import LoginScreen from './components/LoginScreen';
-import ProfileSetupModal from './components/ProfileSetupModal';
-import Header from './components/Header';
-import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard';
 import InternationalMatch from './pages/InternationalMatch';
 import IPLTournament from './pages/IPLTournament';
 import BBLTournament from './pages/BBLTournament';
 import DomesticTournament from './pages/DomesticTournament';
+import LoginScreen from './components/LoginScreen';
+import ProfileSetupModal from './components/ProfileSetupModal';
+import Header from './components/Header';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      staleTime: 1000 * 60 * 5,
+    },
+  },
+});
 
 // Layout component that wraps all authenticated pages
 function AppLayout() {
-  return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      <main className="flex-1">
-        <Outlet />
-      </main>
-      <Footer />
-    </div>
-  );
-}
-
-// Auth guard wrapper
-function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { identity, isInitializing } = useInternetIdentity();
-  const { data: userProfile, isLoading: profileLoading, isFetched } = useGetCallerUserProfile();
-
+  const { identity } = useInternetIdentity();
   const isAuthenticated = !!identity;
-  const showProfileSetup = isAuthenticated && !profileLoading && isFetched && userProfile === null;
 
-  if (isInitializing) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-4">
-          <img src="/assets/generated/cricket-ball-icon.dim_128x128.png" alt="Loading" className="w-16 h-16 mx-auto animate-spin" />
-          <p className="font-heading text-muted-foreground">Loading Cricket Premier...</p>
-        </div>
-      </div>
-    );
-  }
+  const {
+    data: userProfile,
+    isLoading: profileLoading,
+    isFetched,
+  } = useGetCallerUserProfile();
 
+  const showProfileSetup =
+    isAuthenticated && !profileLoading && isFetched && userProfile === null;
+
+  // If not authenticated, show login screen immediately — no blocking spinner
   if (!isAuthenticated) {
     return <LoginScreen />;
   }
 
   return (
-    <>
-      {showProfileSetup && <ProfileSetupModal open={showProfileSetup} />}
-      {children}
-    </>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      {showProfileSetup && <ProfileSetupModal />}
+      <footer className="border-t border-border bg-card py-4 px-6 text-center text-sm text-muted-foreground">
+        <p>
+          Built with{' '}
+          <span className="text-destructive">♥</span>{' '}
+          using{' '}
+          <a
+            href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname || 'cricket-game')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline font-medium"
+          >
+            caffeine.ai
+          </a>{' '}
+          &copy; {new Date().getFullYear()}
+        </p>
+      </footer>
+    </div>
   );
 }
 
-// Route definitions
+// Root route
 const rootRoute = createRootRoute({
-  component: () => (
-    <AuthGuard>
-      <AppLayout />
-    </AuthGuard>
-  ),
+  component: AppLayout,
 });
 
-const indexRoute = createRoute({
+// Child routes
+const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: Dashboard,
@@ -102,7 +110,7 @@ const domesticRoute = createRoute({
 });
 
 const routeTree = rootRoute.addChildren([
-  indexRoute,
+  dashboardRoute,
   internationalRoute,
   iplRoute,
   bblRoute,
@@ -118,5 +126,9 @@ declare module '@tanstack/react-router' {
 }
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }

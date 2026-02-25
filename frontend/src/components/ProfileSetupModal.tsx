@@ -1,76 +1,67 @@
 import React, { useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useSaveCallerUserProfile } from '../hooks/useQueries';
-import { Loader2, User } from 'lucide-react';
 
-interface ProfileSetupModalProps {
-  open: boolean;
-}
-
-export default function ProfileSetupModal({ open }: ProfileSetupModalProps) {
+export default function ProfileSetupModal() {
   const [name, setName] = useState('');
-  const saveProfile = useSaveCallerUserProfile();
+  const { mutate: saveProfile, isPending } = useSaveCallerUserProfile();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
-    await saveProfile.mutateAsync({ name: name.trim() });
+    saveProfile({ name: name.trim() });
   };
 
   return (
-    <Dialog open={open}>
-      <DialogContent className="card-stadium border-border max-w-md" onInteractOutside={(e) => e.preventDefault()}>
-        <DialogHeader>
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-full gold-gradient flex items-center justify-center">
-              <User className="w-8 h-8 text-background" />
-            </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="bg-card border border-border rounded-2xl shadow-2xl p-8 w-full max-w-sm mx-4">
+        <div className="text-center mb-6">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">🏏</span>
           </div>
-          <DialogTitle className="font-display text-2xl text-center text-foreground">
-            Set Up Your Profile
-          </DialogTitle>
-          <DialogDescription className="text-center text-muted-foreground">
-            Welcome to Cricket Premier! Enter your name to get started.
-          </DialogDescription>
-        </DialogHeader>
+          <h2 className="text-xl font-bold text-foreground">
+            Welcome, Cricketer!
+          </h2>
+          <p className="text-muted-foreground text-sm mt-1">
+            Set up your player profile to get started
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-foreground font-heading">Your Name</Label>
-            <Input
-              id="name"
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label
+              htmlFor="playerName"
+              className="block text-sm font-medium text-foreground mb-1"
+            >
+              Your Name
+            </label>
+            <input
+              id="playerName"
+              type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name..."
-              className="bg-secondary border-border text-foreground placeholder:text-muted-foreground"
+              placeholder="Enter your name"
+              className="w-full px-4 py-2.5 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition"
               autoFocus
+              maxLength={50}
             />
           </div>
-          <Button
+
+          <button
             type="submit"
-            disabled={!name.trim() || saveProfile.isPending}
-            className="w-full gold-gradient text-background font-heading font-bold border-0 hover:opacity-90"
+            disabled={!name.trim() || isPending}
+            className="w-full py-2.5 px-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {saveProfile.isPending ? (
+            {isPending ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                 Saving...
               </>
             ) : (
-              'Start Playing!'
+              'Start Playing'
             )}
-          </Button>
+          </button>
         </form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }

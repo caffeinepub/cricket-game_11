@@ -1,201 +1,121 @@
 {
   "kind": "build_request",
-  "title": "Cricket Game with Multi-Format, IPL/BBL/Domestic Leagues, Country Teams & Login",
-  "projectName": "Cricket Premier",
+  "title": "Add immersive 3D match view with Three.js (React Three Fiber)",
+  "projectName": "Cricket Game",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Implement Internet Identity-based user authentication so users must log in before accessing any game features. Display a login screen with a 'Login with Internet Identity' button. After login, show the user's principal ID and a logout option.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "login security"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Unauthenticated users see a login page and cannot access game content",
-        "Clicking 'Login with Internet Identity' triggers Internet Identity authentication",
-        "After successful login, the user is redirected to the main dashboard",
-        "User principal ID is stored and displayed in the UI",
-        "Logout button clears the session and returns to the login screen"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Create a backend data model for all international cricket country teams (e.g., India, Australia, England, Pakistan, South Africa, New Zealand, West Indies, Sri Lanka, Bangladesh, Afghanistan, Zimbabwe, Ireland, and others) with attributes: team name, country code, jersey color, squad roster (player names, batting/bowling ratings).",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "all country teams"
-        ]
-      },
-      "acceptanceCriteria": [
-        "At least 12 international teams are seeded in the backend",
-        "Each team has name, country code, jersey color, and a squad of players",
-        "Each player has batting rating and bowling rating attributes",
-        "Backend exposes a query to list all teams and fetch team details by ID"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Implement three cricket match formats: Test (5-day, up to 2 innings each), ODI (50 overs per side), and T20 (20 overs per side). The game engine must simulate match outcomes ball by ball including runs scored, wickets, extras, and innings completion based on format rules.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "all three formate"
-        ]
-      },
-      "acceptanceCriteria": [
-        "T20 format simulates 20 overs per innings",
-        "ODI format simulates 50 overs per innings",
-        "Test format simulates up to 2 innings per team over a match",
-        "Match simulation produces a scorecard with runs, wickets, overs",
-        "Match result (win/loss/draw/tie) is computed and stored"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Create an IPL (Indian Premier League) tournament mode with all 10 IPL franchise teams (e.g., Mumbai Indians, Chennai Super Kings, Royal Challengers Bangalore, Kolkata Knight Riders, Delhi Capitals, Punjab Kings, Rajasthan Royals, Sunrisers Hyderabad, Lucknow Super Giants, Gujarat Titans). Use T20 format. Include a group stage (round-robin) and knockout rounds (Qualifier 1, Eliminator, Qualifier 2, Final).",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "ipl"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All 10 IPL teams are available with names and colors",
-        "Tournament generates a full round-robin group stage schedule",
-        "Points table tracks wins, losses, and net run rate",
-        "Top 4 teams advance to knockout rounds",
-        "Final match determines the IPL champion",
-        "Tournament progress and results are persisted in the backend"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Create a BBL (Big Bash League) tournament mode with all 8 BBL franchise teams (Sydney Sixers, Sydney Thunder, Melbourne Stars, Melbourne Renegades, Brisbane Heat, Adelaide Strikers, Hobart Hurricanes, Perth Scorchers). Use T20 format with a group stage and finals series.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "BBl"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All 8 BBL teams are available with names and colors",
-        "Tournament generates a round-robin group stage schedule",
-        "Points table tracks wins, losses, and net run rate",
-        "Top teams advance to finals series",
-        "Finals series determines the BBL champion",
-        "Tournament progress and results are persisted"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Create a Domestic cricket tournament mode representing major domestic leagues (e.g., Ranji Trophy - India, Sheffield Shield - Australia, County Championship - England). Allow selection of domestic teams per league. Support both multi-day (Test-like) and limited-overs format depending on the selected domestic competition.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-2"
-        ],
-        "quotes": [
-          "Domest games"
-        ]
-      },
-      "acceptanceCriteria": [
-        "At least 3 domestic competitions are available (Ranji Trophy, Sheffield Shield, County Championship)",
-        "Each domestic league has its own set of teams",
-        "Players can start a domestic tournament and simulate matches",
-        "Standings/points tables are shown per domestic competition",
-        "Results are saved to the backend"
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "text": "Build a main dashboard that lets the authenticated user choose between: International (country vs country) matches, IPL tournament, BBL tournament, and Domestic leagues. Show ongoing and completed tournaments/matches for the logged-in user.",
+      "id": "REQ-15",
+      "text": "Create a new CricketStadium3D component using React Three Fiber (@react-three/fiber) and @react-three/drei that renders an immersive 3D cricket stadium scene from an elevated broadcast-style camera angle. The scene must include: a flat green pitch strip in the center, an outfield ground plane with boundary rope marker, basic stadium stands around the boundary with crowd atmosphere (simple geometric shapes representing crowd tiers), and ambient + directional lighting with a warm floodlight-style glow. The camera should be positioned above and behind the batsman end, looking down the pitch toward the bowler end.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-6",
+          "msg-7",
+          "msg-8"
         ]
       },
       "acceptanceCriteria": [
-        "Dashboard displays four clearly labelled sections: International, IPL, BBL, Domestic",
-        "Each section is accessible via a navigation card or tab",
-        "Active/ongoing games and completed results are visible",
-        "Only authenticated users can see the dashboard"
+        "A 3D canvas renders a recognizable cricket ground with pitch strip, outfield, and boundary",
+        "Stadium stands/crowd geometry is visible around the boundary",
+        "Lighting gives a floodlit stadium atmosphere",
+        "Camera angle is elevated broadcast/isometric style looking down the pitch",
+        "Component renders without errors on all match pages"
       ]
     },
     {
-      "id": "REQ-8",
-      "text": "Implement a match simulation screen that displays a live-style scorecard during a simulated match: current batsmen, bowler, score, overs, fall of wickets, and recent ball-by-ball commentary. Show a 'Next Ball' or 'Auto-Simulate' button to progress the match.",
+      "id": "REQ-16",
+      "text": "Add animated ball delivery trajectory to the CricketStadium3D component. For each new ball event emitted by the match simulator, animate a cricket ball (small sphere) traveling from the bowler end to the batsman end along a realistic arc (parabolic trajectory). The ball color should be red/white based on match format. The animation should complete within 1–1.5 seconds before the next delivery can begin. On wicket events, add a stumps-hit visual effect (stumps fly/scatter). On six events, animate the ball continuing over the boundary.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-6",
+          "msg-7",
+          "msg-8"
         ]
       },
       "acceptanceCriteria": [
-        "Scorecard updates after each simulated ball/over",
-        "Current batting and bowling partnerships are displayed",
-        "Recent ball-by-ball commentary is shown (e.g., '4! Cover drive', 'OUT! Caught at mid-on')",
-        "Innings summary and match result screen shown at match end"
+        "Ball animates from bowler end to batsman end for each delivery",
+        "Animation follows a parabolic arc",
+        "Animation completes within 1.5 seconds",
+        "Wicket deliveries show a stumps-scatter effect",
+        "Six deliveries show ball trajectory continuing over the boundary"
       ]
     },
     {
-      "id": "REQ-9",
-      "text": "Apply a bold cricket-themed visual design: dark green pitch-inspired background, gold and white accent colors, cricket-inspired typography, stadium-atmosphere UI with card-based layouts for teams and scores. Enforce this style consistently across all screens.",
+      "id": "REQ-17",
+      "text": "Add 11 fielder position markers to the CricketStadium3D scene. Each fielder is represented as a small colored cylinder or capsule on the ground. Fielder positions should be dynamically repositioned based on match situation: attacking field (more slips/gully) when batting team has few wickets lost, defensive field (spread outfield) when batting team is chasing a big total or batting team is strong. Pass current match state (wickets fallen, overs bowled, run rate) as props to drive fielder repositioning.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2"
+          "msg-6",
+          "msg-7",
+          "msg-8"
         ]
       },
       "acceptanceCriteria": [
-        "All screens use the dark green + gold + white color palette",
-        "Cricket-themed iconography and layout patterns are consistent",
-        "Typography is bold and legible on dark backgrounds",
-        "Login screen, dashboard, team selection, and match screens all share the same visual theme"
+        "11 fielder markers are visible on the 3D ground at all times",
+        "Fielder positions shift between attacking and defensive configurations based on match state",
+        "Markers are clearly distinguishable from the pitch/ground",
+        "Wicketkeeper position is always behind the stumps at batsman end"
+      ]
+    },
+    {
+      "id": "REQ-18",
+      "text": "Integrate the CricketStadium3D component into the existing InternationalMatch.tsx match simulation screen. The 3D view should occupy the upper portion of the match screen (approximately 50–60% height) above the existing live scorecard (Scorecard component) and commentary feed (CommentaryFeed component). On mobile/small screens, the 3D view should be collapsible or reduced in height. The 3D view receives the current ball event and match state as props so animations trigger in sync with each 'Next Ball' or 'Auto-Simulate' step. Ensure no existing match simulation logic, backend calls, or scorecard functionality is broken.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6",
+          "msg-7",
+          "msg-8"
+        ]
+      },
+      "acceptanceCriteria": [
+        "3D stadium view appears above the scorecard on the InternationalMatch screen",
+        "Ball animation triggers on each 'Next Ball' and during Auto-Simulate",
+        "Existing scorecard, commentary feed, and match logic remain fully functional",
+        "Layout is responsive — 3D view adapts to smaller screens",
+        "No regression in match result summary or navigation"
+      ]
+    },
+    {
+      "id": "REQ-19",
+      "text": "Add stadium atmosphere particle/visual effects to the CricketStadium3D scene: a subtle crowd noise visual effect (rippling crowd wave animation as colored particles on the stands) triggered on six and wicket events, and floodlight cone effects (semi-transparent light shafts from four corner towers) that give the scene a night-match stadium feel. These effects should be lightweight and not cause frame rate drops below 30fps on average hardware.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6",
+          "msg-7",
+          "msg-8"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Floodlight cone effects are visible from corner towers",
+        "Crowd wave particle effect triggers on six and wicket events",
+        "Visual effects do not cause noticeable frame rate degradation",
+        "Atmosphere effects are consistent with the dark/floodlit cricket theme"
       ]
     }
   ],
   "constraints": [
-    "Authentication must use Internet Identity only — no username/password or third-party auth",
-    "All game state and match data must be persisted in the Motoko backend actor",
-    "All Motoko logic must remain in a single main actor file (backend/main.mo)",
-    "Do not edit any files under frontend/src/hooks/ or frontend/src/components/ui"
+    "Do not modify any files under frontend/src/hooks/ (immutable paths)",
+    "Do not modify frontend/src/main.tsx (immutable path)",
+    "Do not modify files under frontend/src/components/ui/ (immutable path)",
+    "All existing match simulation logic, scoring, and backend integration must remain intact",
+    "All existing tournament modes (IPL, BBL, Domestic, International) must continue to work without regression",
+    "Internet Identity authentication flow must not be affected"
   ],
   "nonGoals": [
-    "Real-time multiplayer or WebSocket-based live match streaming",
-    "Actual live cricket data feeds or third-party sports APIs",
-    "Mobile app or React Native version",
-    "Payment or in-app purchase features",
-    "Video or audio commentary",
-    "Fantasy cricket or betting features"
+    "AAA-quality photorealistic graphics (Cricket 24 / Ashes Cricket level fidelity)",
+    "VR/AR experience",
+    "Real-time multiplayer 3D",
+    "3D player character models with motion-captured animations",
+    "Audio/sound effects",
+    "Integrating 3D view into IPL, BBL, or Domestic tournament pages (International match only for this iteration)"
   ],
   "imageRequirements": {
-    "required": [
-      "Cricket stadium panoramic banner with floodlights and green pitch at night (stadium-banner.dim_1200x400.png)",
-      "Cricket ball close-up illustration with red leather and white seam on dark background (cricket-ball-icon.dim_128x128.png)",
-      "Cricket bat silhouette icon in gold on dark green background (cricket-bat-icon.dim_128x128.png)",
-      "IPL trophy cup golden illustration on dark background (ipl-trophy.dim_256x256.png)",
-      "BBL Big Bash lightning bolt logo-style graphic in teal and gold (bbl-logo.dim_256x256.png)"
-    ],
+    "required": [],
     "edits": []
   }
 }

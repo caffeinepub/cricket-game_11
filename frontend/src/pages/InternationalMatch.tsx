@@ -2,7 +2,6 @@ import React, { useState, useCallback, useRef } from 'react';
 import { MatchFormat } from '../backend';
 import { INTERNATIONAL_TEAMS, TeamData, getFormatLabel, getFormatOvers } from '../lib/cricketData';
 import {
-  simulateFullInnings,
   createInitialInnings,
   InningsState,
   simulateBall,
@@ -14,6 +13,7 @@ import TeamSelector from '../components/TeamSelector';
 import Scorecard from '../components/Scorecard';
 import CommentaryFeed from '../components/CommentaryFeed';
 import MatchResultSummary from '../components/MatchResultSummary';
+import CricketStadium3D, { BallEventInfo } from '../components/CricketStadium3D';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Play, FastForward, ChevronLeft } from 'lucide-react';
@@ -29,6 +29,8 @@ interface LiveMatchState {
   team2BattingRatings: number[];
   team1BowlingRatings: number[];
   team2BowlingRatings: number[];
+  team1Color: string;
+  team2Color: string;
   format: MatchFormat;
   totalOvers: number;
   innings: number;
@@ -51,6 +53,8 @@ export default function InternationalMatch() {
   const [format, setFormat] = useState<MatchFormat>(MatchFormat.t20);
   const [matchState, setMatchState] = useState<LiveMatchState | null>(null);
   const [isAutoSimulating, setIsAutoSimulating] = useState(false);
+  const [lastBallEvent, setLastBallEvent] = useState<BallEventInfo | null>(null);
+  const ballEventCounterRef = useRef(0);
   const autoRef = useRef(false);
   const createMatch = useCreateMatch();
 
@@ -71,6 +75,8 @@ export default function InternationalMatch() {
       team2BattingRatings: bowlingTeam.players.map(p => p.battingRating),
       team1BowlingRatings: battingTeam.players.map(p => p.bowlingRating),
       team2BowlingRatings: bowlingTeam.players.map(p => p.bowlingRating),
+      team1Color: battingTeam.color || '#cc2222',
+      team2Color: bowlingTeam.color || '#2244cc',
       format,
       totalOvers,
       innings: 1,
@@ -89,8 +95,8 @@ export default function InternationalMatch() {
     setPhase('playing');
   }, [team1, team2, format]);
 
-  const simulateOneBall = useCallback((state: LiveMatchState): LiveMatchState => {
-    if (state.isComplete) return state;
+  const simulateOneBall = useCallback((state: LiveMatchState): { newState: LiveMatchState; ballResult: { runs: number; isWicket: boolean } | null } => {
+    if (state.isComplete) return { newState: state, ballResult: null };
 
     const isInnings1 = state.innings === 1;
     const currentInnings = isInnings1 ? { ...state.innings1 } : { ...state.innings2 };
@@ -106,9 +112,8 @@ export default function InternationalMatch() {
       if (isInnings1) {
         const newTarget = currentInnings.runs + 1;
         const newState = { ...state, innings: 2, target: newTarget, innings1: currentInnings };
-        return newState;
+        return { newState, ballResult: null };
       } else {
-        // Match over
         let winner = '';
         let winMargin = '';
         if (currentInnings.runs >= state.target) {
@@ -120,7 +125,7 @@ export default function InternationalMatch() {
           const runDiff = state.innings1.runs - currentInnings.runs;
           winMargin = `${winner} won by ${runDiff} run${runDiff !== 1 ? 's' : ''}`;
         }
-        return { ...state, innings2: currentInnings, isComplete: true, winner, winMargin };
+        return { newState: { ...state, innings2: currentInnings, isComplete: true, winner, winMargin }, ballResult: null };
       }
     }
 
@@ -202,13 +207,27 @@ export default function InternationalMatch() {
       newState.nextBatsman2 = nextBatsman;
       newState.currentBowlerIdx2 = newBowlerIdx;
     }
-    return newState;
+    return { newState, ballResult: { runs: result.runs, isWicket: result.isWicket } };
+  }, []);
+
+  const fireBallEvent = useCallback((runs: number, isWicket: boolean) => {
+    ballEventCounterRef.current += 1;
+    setLastBallEvent({
+      runs,
+      isWicket,
+      isSix: runs === 6,
+      isFour: runs === 4,
+      id: ballEventCounterRef.current,
+    });
   }, []);
 
   const handleNextBall = useCallback(() => {
     if (!matchState) return;
-    const newState = simulateOneBall(matchState);
+    const { newState, ballResult } = simulateOneBall(matchState);
     setMatchState(newState);
+    if (ballResult) {
+      fireBallEvent(ballResult.runs, ballResult.isWicket);
+    }
     if (newState.isComplete) {
       saveMatchResult(newState);
     }
@@ -227,9 +246,13 @@ export default function InternationalMatch() {
         if (current.isComplete) saveMatchResult(current);
         return;
       }
-      current = simulateOneBall(current);
+      const { newState, ballResult } = simulateOneBall(current);
+      current = newState;
       setMatchState({ ...current });
-      setTimeout(simulate, 80);
+      if (ballResult) {
+        fireBallEvent(ballResult.runs, ballResult.isWicket);
+      }
+      setTimeout(simulate, 120);
     };
     simulate();
   }, [matchState, isAutoSimulating, simulateOneBall]);
@@ -268,6 +291,7 @@ export default function InternationalMatch() {
     autoRef.current = false;
     setIsAutoSimulating(false);
     setMatchState(null);
+    setLastBallEvent(null);
     setPhase('setup');
   }, []);
 
@@ -293,6 +317,8 @@ export default function InternationalMatch() {
     const isInnings1 = matchState.innings === 1;
     const currentInnings = isInnings1 ? matchState.innings1 : matchState.innings2;
     const target = isInnings1 ? undefined : matchState.target;
+    const currentOvers = Math.floor(currentInnings.balls / 6);
+    const runRate = currentInnings.balls > 0 ? (currentInnings.runs / (currentInnings.balls / 6)) : 0;
 
     if (matchState.isComplete) {
       return (
@@ -314,6 +340,7 @@ export default function InternationalMatch() {
 
     return (
       <div className="container mx-auto px-4 py-8 max-w-3xl space-y-4">
+        {/* Header */}
         <div className="flex items-center justify-between">
           <button onClick={handleReset} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm font-heading">
             <ChevronLeft className="w-4 h-4" /> Back
@@ -328,6 +355,48 @@ export default function InternationalMatch() {
           </div>
         </div>
 
+        {/* 3D Stadium View */}
+        <div className="relative">
+          <CricketStadium3D
+            ballEvent={lastBallEvent}
+            wickets={currentInnings.wickets}
+            overs={currentOvers}
+            runRate={runRate}
+            format={matchState.format}
+            team1Color={matchState.team1Color}
+            team2Color={matchState.team2Color}
+          />
+          {/* Team labels overlay */}
+          <div className="absolute top-2 left-3 right-3 flex justify-between pointer-events-none">
+            <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg">
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: matchState.team1Color }}
+              />
+              <span className="text-xs font-heading text-white font-bold">{matchState.team1}</span>
+              <span className="text-xs font-heading text-yellow-300 ml-1">
+                {currentInnings.runs}/{currentInnings.wickets}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg">
+              <span className="text-xs font-heading text-white font-bold">{matchState.team2}</span>
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: matchState.team2Color }}
+              />
+            </div>
+          </div>
+          {/* Over counter overlay */}
+          <div className="absolute bottom-2 right-3 pointer-events-none">
+            <div className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg">
+              <span className="text-xs font-heading text-white/80">
+                Over {currentOvers}.{currentInnings.balls % 6} / {matchState.totalOvers}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Scorecard */}
         <Scorecard
           team1={matchState.team1}
           team2={matchState.team2}
@@ -337,6 +406,7 @@ export default function InternationalMatch() {
           target={target}
         />
 
+        {/* Controls */}
         <div className="flex gap-3">
           {isAutoSimulating ? (
             <Button onClick={stopAuto} variant="outline" className="flex-1 border-destructive text-destructive hover:bg-destructive/10">
@@ -356,6 +426,7 @@ export default function InternationalMatch() {
           )}
         </div>
 
+        {/* Commentary */}
         <CommentaryFeed events={currentInnings.ballEvents} />
 
         {/* Previous innings score */}
